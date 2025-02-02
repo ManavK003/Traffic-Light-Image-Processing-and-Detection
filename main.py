@@ -1,6 +1,32 @@
 import cv2
 import cvlib as cv
 from cvlib.object_detection import draw_bbox
+from ultralytics import YOLO
+
+#Using v8 Model for much faster, lightweight and accurate real-time detection
+
+model = YOLO("yolov8n.pt")  # Using the small model for speed
+
+def detect_objects(frame):
+    results = model(frame)
+    for result in results:
+        for box in result.boxes:
+            class_id = int(box.cls[0])  # Get class index
+            if class_id == 9:  # 'Traffic Light' class in COCO dataset
+                x1, y1, x2, y2 = map(int, box.xyxy[0])  # Bounding box coordinates
+                roi = frame[y1:y2, x1:x2]  # Extract traffic light region
+                
+                predicted_label = classify_traffic_light(roi)
+                print(f"Traffic Light Detected: {predicted_label}")
+                
+                if predicted_label == 'Red':
+                    print("Instruction: Stop")
+                elif predicted_label == 'Green':
+                    print("Instruction: Go")
+                elif predicted_label == 'Yellow':
+                    print("Instruction: Slow down")
+
+    return results
 
 def normalize_image(image):
     # Convert image to LAB color space

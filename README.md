@@ -59,7 +59,7 @@ Example usage:
 
     ```bash
     python detect_traffic_lights.py --input images/test_image.jpg
-```
+
 This command will process the image located at images/test_image.jpg and display the detected traffic light status.
 
 ## Acknowledgements and References
